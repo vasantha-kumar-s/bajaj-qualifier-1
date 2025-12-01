@@ -1,0 +1,94 @@
+-- Create Database
+CREATE DATABASE IF NOT EXISTS test_db;
+USE test_db;
+
+-- Drop existing tables if they exist
+DROP TABLE IF EXISTS PAYMENTS;
+DROP TABLE IF EXISTS EMPLOYEE;
+DROP TABLE IF EXISTS DEPARTMENT;
+
+-- Create DEPARTMENT table
+CREATE TABLE DEPARTMENT (
+    DEPARTMENT_ID INT PRIMARY KEY,
+    DEPARTMENT_NAME VARCHAR(100)
+);
+
+-- Create EMPLOYEE table
+CREATE TABLE EMPLOYEE (
+    EMP_ID INT PRIMARY KEY,
+    FIRST_NAME VARCHAR(50),
+    LAST_NAME VARCHAR(50),
+    DOB DATE,
+    GENDER VARCHAR(10),
+    DEPARTMENT INT,
+    FOREIGN KEY (DEPARTMENT) REFERENCES DEPARTMENT(DEPARTMENT_ID)
+);
+
+-- Create PAYMENTS table
+CREATE TABLE PAYMENTS (
+    PAYMENT_ID INT PRIMARY KEY,
+    EMP_ID INT,
+    AMOUNT DECIMAL(10,2),
+    PAYMENT_TIME DATETIME,
+    FOREIGN KEY (EMP_ID) REFERENCES EMPLOYEE(EMP_ID)
+);
+
+-- Insert Department data
+INSERT INTO DEPARTMENT (DEPARTMENT_ID, DEPARTMENT_NAME) VALUES
+(1, 'HR'),
+(2, 'Finance'),
+(3, 'Engineering'),
+(4, 'Sales'),
+(5, 'Marketing'),
+(6, 'IT');
+
+-- Insert Employee data
+INSERT INTO EMPLOYEE (EMP_ID, FIRST_NAME, LAST_NAME, DOB, GENDER, DEPARTMENT) VALUES
+(1, 'John', 'Williams', '1980-05-15', 'Male', 3),
+(2, 'Sarah', 'Johnson', '1990-07-20', 'Female', 2),
+(3, 'Michael', 'Smith', '1985-02-10', 'Male', 3),
+(4, 'Emily', 'Brown', '1992-11-30', 'Female', 4),
+(5, 'David', 'Jones', '1988-09-05', 'Male', 5),
+(6, 'Olivia', 'Davis', '1995-04-12', 'Female', 1),
+(7, 'James', 'Wilson', '1983-03-25', 'Male', 6),
+(8, 'Sophia', 'Anderson', '1991-08-17', 'Female', 4),
+(9, 'Liam', 'Miller', '1979-12-01', 'Male', 1),
+(10, 'Emma', 'Taylor', '1993-06-28', 'Female', 5);
+
+-- Insert Payment data
+INSERT INTO PAYMENTS (PAYMENT_ID, EMP_ID, AMOUNT, PAYMENT_TIME) VALUES
+(1, 2, 65784.00, '2025-01-01 13:44:12'),
+(2, 4, 62736.00, '2025-01-06 18:36:37'),
+(3, 1, 69437.00, '2025-01-01 10:19:21'),
+(4, 3, 67183.00, '2025-01-02 17:21:57'),
+(5, 2, 66273.00, '2025-02-01 11:49:15'),
+(6, 5, 71475.00, '2025-01-01 07:24:14'),
+(7, 1, 70837.00, '2025-02-03 19:11:31'),
+(8, 6, 69628.00, '2025-01-02 10:41:15'),
+(9, 4, 71876.00, '2025-02-01 12:16:47'),
+(10, 3, 70098.00, '2025-02-03 10:11:17'),
+(11, 6, 67827.00, '2025-02-02 19:21:27'),
+(12, 5, 69871.00, '2025-02-05 17:54:17'),
+(13, 2, 72984.00, '2025-03-05 09:37:35'),
+(14, 1, 67982.00, '2025-03-01 06:09:51'),
+(15, 6, 70198.00, '2025-03-02 10:34:35'),
+(16, 4, 74998.00, '2025-03-02 09:27:26');
+
+-- Verify the data
+SELECT 'Departments' AS TableName, COUNT(*) AS RowCount FROM DEPARTMENT
+UNION ALL
+SELECT 'Employees', COUNT(*) FROM EMPLOYEE
+UNION ALL
+SELECT 'Payments', COUNT(*) FROM PAYMENTS;
+
+-- Test Query (Question 1 - Monthly salary report with running total)
+SELECT 
+    CONCAT(e.FIRST_NAME, ' ', e.LAST_NAME) AS FULL_NAME,
+    DATE_FORMAT(p.PAYMENT_TIME, '%Y-%m') AS MONTH,
+    SUM(p.AMOUNT) AS TOTAL_SALARY,
+    SUM(SUM(p.AMOUNT)) OVER (PARTITION BY e.EMP_ID ORDER BY DATE_FORMAT(p.PAYMENT_TIME, '%Y-%m')) AS RUNNING_TOTAL,
+    TIMESTAMPDIFF(YEAR, e.DOB, CURDATE()) AS AGE
+FROM EMPLOYEE e
+JOIN PAYMENTS p ON e.EMP_ID = p.EMP_ID
+GROUP BY e.EMP_ID, e.FIRST_NAME, e.LAST_NAME, e.DOB, DATE_FORMAT(p.PAYMENT_TIME, '%Y-%m')
+ORDER BY e.EMP_ID, MONTH;
