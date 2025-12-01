@@ -58,8 +58,8 @@ java -jar target/bajaj-qualifier.jar
 }
 ```
 
+<img width="1717" height="685" alt="image" src="https://github.com/user-attachments/assets/c9a5d63a-fdc8-4b88-b1a3-79bc78b0ed5e" />
 
-<img width="1739" height="648" alt="image" src="https://github.com/user-attachments/assets/f5b3f902-c73e-4854-9908-bbf357ae900e" />
 
 
 ### Step 2: Submit Solution
