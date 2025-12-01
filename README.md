@@ -89,3 +89,8 @@ java -jar target/bajaj-qualifier.jar
 - Spring Boot 3.2.0
 - Maven
 - MySQL
+
+
+<img width="1739" height="648" alt="image" src="https://github.com/user-attachments/assets/9bbc8a76-4865-4ab9-868c-36ff0d0d6abc" />
+
+<img width="1739" height="648" alt="image" src="https://github.com/user-attachments/assets/f5b3f902-c73e-4854-9908-bbf357ae900e" />
